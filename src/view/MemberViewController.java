@@ -40,7 +40,7 @@ public class MemberViewController implements Initializable {
 	@FXML	private TableColumn<Member, String> columnName;
 	@FXML	private TableColumn<Member, String> columnID;
 	@FXML	private TableColumn<Member, String> columnPW;
-	//@FXML	private TableColumn<Member, String> columnMobilePhone;
+	@FXML	private TableColumn<Member, String> columnMobilePhone;
 	
 	// Member : model이라고도 하고 DTO, VO 라고도 함
 	// 시스템 밖에 저장된 정보를 객체들간에 사용하는 정보로 변환한 자료구조 또는 객체
@@ -62,6 +62,7 @@ public class MemberViewController implements Initializable {
 		columnName.setCellValueFactory(cvf -> cvf.getValue().unameProperty());				
 		columnID.setCellValueFactory(cvf -> cvf.getValue().uidProperty());
 		columnPW.setCellValueFactory(cvf -> cvf.getValue().upwProperty());
+		columnMobilePhone.setCellValueFactory(cvf -> cvf.getValue().mobilePhoneProperty());
 		
 		tableViewMember.getSelectionModel().selectedItemProperty().addListener(
 				(observable, oldValue, newValue) -> showMemberInfo(newValue));
@@ -98,13 +99,13 @@ public class MemberViewController implements Initializable {
 			tfID.setText(member.getUid());
 			tfPW.setText(member.getUpw());
 			tfName.setText(member.getUname());
-//			tfMobilePhone.setText(member.getMobilePhone());
+			tfMobilePhone.setText(member.getMobilePhone());
 		}
 		 else {
 			 tfID.setText("");
 			 tfPW.setText("");
 		     tfName.setText("");
-//		     tfMobilePhone.setText("010");
+		     tfMobilePhone.setText("");
 		 }
 	}
 	
@@ -119,25 +120,45 @@ public class MemberViewController implements Initializable {
 	
 	@FXML 
 	private void handleCreate() { // event source, listener, handler
+		if(tfID.getText().equals(""))
+			tfID.setText(null);
+		if(tfPW.getText().equals(""))
+			tfPW.setText(null);
+		if(tfName.getText().equals(""))
+			tfName.setText(null);
+		if(tfMobilePhone.getText().equals(""))
+			tfMobilePhone.setText(null);
 		if(tfID.getText().length() > 0) {
 			Member newMember = 
-					new Member(tfID.getText(), tfPW.getText(), tfName.getText(), "");
+					new Member(tfID.getText(), tfPW.getText(), tfName.getText(), tfMobilePhone.getText());
+			if(memberService.findByUid(newMember)<0) {
 			data.add(newMember);			
 			tableViewMember.setItems(data);
 			memberService.create(newMember);
+			}
+			else {
+				showAlert("ID 중복");
+			}
 		} else
 			showAlert("ID 입력오류");
+		tfID.setText("");
+		 tfPW.setText("");
+	     tfName.setText("");
+	     tfMobilePhone.setText("");
 	}
 	@FXML 
 	private void handleUpdate() {
 		Member newMember = new Member(tfID.getText(), tfPW.getText(), tfName.getText(), tfMobilePhone.getText());
 
 		int selectedIndex = tableViewMember.getSelectionModel().getSelectedIndex();
-		if (selectedIndex >= 0) {
+		if(selectedIndex != memberService.findByUid(newMember)) {
+			showAlert("아이디를 수정하면 업데이트를 수정할수 없습니다.");
+		}
+		else if (selectedIndex >= 0) {
 			tableViewMember.getItems().set(selectedIndex, newMember);
 			memberService.update(newMember);			
 		} else {
-			showAlert("삭제를 실패하였습니다.");          
+			showAlert("수정을 실패하였습니다.");          
         }
 	}
 	
@@ -155,8 +176,8 @@ public class MemberViewController implements Initializable {
 	private void showAlert(String message) {
 		Alert alert = new Alert(AlertType.INFORMATION);
         alert.initOwner(mainApp.getRootStage());
-        alert.setTitle("Ȯ��");
-        alert.setContentText("Ȯ�� : " + message);            
+        alert.setTitle("경고");
+        alert.setContentText("경고 : " + message);            
         alert.showAndWait();
 	}
 

@@ -27,8 +27,11 @@ public class Member { // DB의 레코드와 매핑되는 객체
 	}
 	
 	public String getUid() {
-		return this.uid.get();
+		if(!uid.get().equals("\"null\""))
+			return this.uid.get();
+		return null;
 	}
+	
 	public void setUid(String uid) {
 		this.uid.set(uid);
 	}
@@ -37,7 +40,9 @@ public class Member { // DB의 레코드와 매핑되는 객체
     }
     
     public String getUpw() {
+    	if(!upw.get().equals("\"null\""))
     	return this.upw.get();
+    	return null;
     }
     public void setUpw(String upw) {
     	this.upw.set(upw);
@@ -47,7 +52,9 @@ public class Member { // DB의 레코드와 매핑되는 객체
     }
     
     public String getUname() {
+    	if(!uname.get().equals("\"null\""))
     	return this.uname.get();
+    	return null;
     }
     public void setUname(String uname) {
     	this.uname.set(uname);
@@ -57,7 +64,9 @@ public class Member { // DB의 레코드와 매핑되는 객체
     }
     
 	public String getMobilePhone() {
+		if(!mobilePhone.get().equals("\"null\""))
 		return this.mobilePhone.get();
+		return null;
 	}
 	public void setMobilePhone(String mobilePhone) {
 		this.mobilePhone.set(mobilePhone);

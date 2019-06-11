@@ -72,10 +72,7 @@ public class MemberDAO {
 			int index = searchByID(member);
 			if(index > 0) { // -1이면 검색 실패, 등록 가능함
 				fw = new MemberFileWriter(file);
-				memberList.remove(index);
-				memberList.add(index, member);
-				//memberList.remove(index);//인덱스를 이용한 삭제
-				//memberList.remove(member);//객체를 이용한 삭제
+				memberList.set(index, member);
 				fw.saveMember(memberList);
 				ret = 0;
 			}
